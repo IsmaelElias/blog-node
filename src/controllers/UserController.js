@@ -1,4 +1,6 @@
 const User = require('../models/User');
+const token = require('../generateToken');
+
 const bcrypt = require('bcryptjs');
 
 class UserController {
@@ -23,7 +25,7 @@ class UserController {
 
         user.password = undefined;
 
-        return res.send({ user} );
+        return res.send({ user, token: token.generate({ id: user.id }) });
     }
 
     async update(req, res) {
