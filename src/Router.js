@@ -1,10 +1,11 @@
 const express = require('express');
+
 const router = express.Router();
 
-//Middleware
+// Middleware
 const AuthMiddleware = require('./middleware/AuthMiddleware');
 
-//Controllers
+// Controllers
 const PostController = require('./controllers/PostController');
 const UserController = require('./controllers/UserController');
 const CommentController = require('./controllers/CommentController');
