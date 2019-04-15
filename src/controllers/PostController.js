@@ -43,10 +43,6 @@ class PostController {
   async show(req, res) {
     const post = await Post.findById(req.params.id).populate(['author', 'comments']);
 
-    post.comments.map((comment) => {
-      comment.post = undefined;
-    });
-
     return res.json(post);
   }
 
