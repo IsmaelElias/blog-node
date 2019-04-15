@@ -11,12 +11,15 @@ const UserController = require('./controllers/UserController');
 const CommentController = require('./controllers/CommentController');
 const LoginController = require('./controllers/LoginController');
 const SubscribeController = require('./controllers/SubscriptionController');
+const ResetPasswordController = require('./controllers/ResetPasswordController');
 
 router.post('/login', LoginController.index);
 router.post('/users', UserController.store);
 router.get('/posts', PostController.index);
 router.get('/posts/:id', PostController.show);
 router.post('/subscription', SubscribeController.subscribe);
+router.post('/forgot_password', ResetPasswordController.forgotPassword);
+router.post('/reset_password', ResetPasswordController.resetPassword);
 
 router.use(AuthMiddleware);
 
