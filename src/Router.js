@@ -10,14 +10,18 @@ const PostController = require('./controllers/PostController');
 const UserController = require('./controllers/UserController');
 const CommentController = require('./controllers/CommentController');
 const LoginController = require('./controllers/LoginController');
+const SubscribeController = require('./controllers/SubscriptionController');
 
 router.post('/login', LoginController.index);
 router.post('/users', UserController.store);
 router.get('/posts', PostController.index);
+router.get('/posts/:id', PostController.show);
+router.post('/subscription', SubscribeController.subscribe);
 
 router.use(AuthMiddleware);
 
-router.get('/posts/:id', PostController.show);
+router.get('/subscribers', SubscribeController.index);
+
 router.post('/posts', PostController.store);
 router.put('/posts/:id', PostController.update);
 router.delete('/posts/:id', PostController.destroy);

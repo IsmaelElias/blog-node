@@ -1,45 +1,66 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable class-methods-use-this */
+/* eslint-disable array-callback-return */
 const Post = require('../models/Post');
+const Subscription = require('../models/Subscription');
+const mailer = require('../modules/mail');
 
-class PostController{
+class PostController {
+  async index(req, res) {
+    const posts = await Post.find().populate('author');
 
-    async index(req, res) {
-        const posts = await Post.find().populate('author');
+    posts.map((post) => {
+      post.text = undefined;
+      post.comments = undefined;
+    });
 
-        posts.map(post => {
-            post.text = undefined;
-            post.comments = undefined;
-        });
+    return res.json(posts);
+  }
 
-        return res.json(posts);
-    };
+  async store(req, res) {
+    const post = await Post.create(req.body);
 
-    async store(req, res) {
-        const post = await Post.create( req.body );
+    const { id } = post;
 
-        return res.json(post);
-    }
+    const subscriptions = await Subscription.find();
 
-    async show(req, res) {
-        const post = await Post.findById(req.params.id).populate(['author', 'comments']);
+    subscriptions.forEach((subscription) => {
+      mailer.sendMail({
+        to: subscription.email,
+        from: 'ismael.esq@hotmail.com',
+        template: 'subscription',
+        context: { id },
+      }, (err) => {
+        if (err) return res.status(400).send({ error: 'Cannot send E-mail ' });
 
-        post.comments.map(comment => {
-            comment.post = undefined;
-        });
+        return res.send();
+      });
+    });
 
-        return res.json(post);
-    }
+    return res.json(post);
+  }
 
-    async update(req, res) {
-        const post = await Post.findByIdAndUpdate(req.params.id, req.body, { new:true });
-        
-        return res.json(post);
-    }
+  async show(req, res) {
+    const post = await Post.findById(req.params.id).populate(['author', 'comments']);
 
-    async destroy(req, res) {
-        await Post.findByIdAndRemove(req.params.id);
+    post.comments.map((comment) => {
+      comment.post = undefined;
+    });
 
-        return res.send('Post excluído com sucesso');
-    }
+    return res.json(post);
+  }
+
+  async update(req, res) {
+    const post = await Post.findByIdAndUpdate(req.params.id, req.body, { new: true });
+
+    return res.json(post);
+  }
+
+  async destroy(req, res) {
+    await Post.findByIdAndRemove(req.params.id);
+
+    return res.send('Post excluído com sucesso');
+  }
 }
 
-module.exports = new PostController;
+module.exports = new PostController();
