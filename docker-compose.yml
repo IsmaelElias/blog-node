@@ -5,6 +5,8 @@ services:
     image: mongo:latest
     ports:
       - 27017:27017
+    volumes:
+      - ./localFolder:/data/db
   app:
     build: .
     command: npm start
